@@ -42,3 +42,8 @@
 //-- update enemyCharacters
 //-- update currentEnemy - should update HP also
 //-- update gameMessage = options.message || ""
+
+
+//jQuery events
+
+//
