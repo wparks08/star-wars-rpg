@@ -46,4 +46,7 @@
 
 //jQuery events
 
-//
+//initialize page on load
+//select character on click
+//select enemy on click
+//attack on click
