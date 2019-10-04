@@ -19,6 +19,23 @@ class Character {
     }
 
     generateImgTag() { //Not sure if I'll need this w/ jQuery? Delete later if unused.
-        return "<img src='" + this.imageUrl + "' alt='" + this.name + "'>";
+        return `<img src='${this.imageUrl}' alt='${this.name}'>`;
+    }
+
+    generateCharacterElement() {
+        var characterContainer = $("<div>");
+        characterContainer.addClass("character");
+        var characterName = $("<div>");
+        characterName.addClass("character-name")
+            .html(this.name);
+        var characterImage = $("<div>");
+        characterImage.addClass("character-image")
+            .html(this.generateImgTag());
+        var characterHP = $("<div>");
+        characterHP.addClass("character-hp")
+            .html(this.healthPoints);
+
+        characterContainer.append([characterName, characterImage, characterHP]);
+        return characterContainer;
     }
 };
