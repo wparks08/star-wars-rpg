@@ -28,10 +28,10 @@ var game = {
         //-- create character objects, store them in allCharacters array
         //-- update display() [leave this up to jQuery?]
         this.characters.push(
-            new Character(150, 10, 15, "placeholderImage", "Obi Wan"),
-            new Character(160, 5, 10, "placeholderImage", "Luke"),
-            new Character(175, 15, 20, "placeholderImage", "Kylo Ren"),
-            new Character(190, 20, 25, "placeholderImage", "Rey")
+            new Character(150, 10, 15, "assets/images/obi-wan.png", "Obi Wan"),
+            new Character(160, 5, 10, "assets/images/luke-skywalker.png", "Luke"),
+            new Character(175, 15, 20, "assets/images/kylo-ren.jpg", "Kylo Ren"),
+            new Character(190, 20, 25, "assets/images/rey.jpg", "Rey")
         )
 
         this.updateDisplay({ message: "Choose a character to play as!" });

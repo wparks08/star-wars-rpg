@@ -19,7 +19,7 @@ class Character {
     }
 
     generateImgTag() { //Not sure if I'll need this w/ jQuery? Delete later if unused.
-        return `<img src='${this.imageUrl}' alt='${this.name}'>`;
+        return `<img src='${this.imageUrl}' alt='${this.name}' width='200'>`;
     }
 
     generateCharacterElement() {
