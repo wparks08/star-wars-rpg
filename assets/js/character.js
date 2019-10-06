@@ -12,6 +12,9 @@ class Character {
 
     reduceHp(damage) {
         this.healthPoints -= damage;
+        if (this.healthPoints < 0) {
+            this.healthPoints = 0;
+        }
     }
 
     increaseAttackPower() {

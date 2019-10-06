@@ -9,24 +9,16 @@ var availableEnemiesElement = $("<div id='available-enemies'>");
 var fightSectionElement = $("<div id='fight-section'>");
 var currentEnemyElement = $("<div id='current-enemy'>");
 
-//Organize game in object
 var game = {
-    //Array storing 4 Character objects
     characters: [],
-    //Selected Character
     userCharacter: Character,
     userHasSelectedCharacter: false,
-    //Selected enemy
     selectedEnemy: Character,
     fighting: false,
-    //[Array] Enemy Characters
     availableEnemies: [],
-    //Game message
-    message: "",
+    // message: "",
 
     initialize: function() {
-        //-- create character objects, store them in allCharacters array
-        //-- update display() [leave this up to jQuery?]
         this.characters.push(
             new Character(150, 10, 15, "assets/images/obi-wan.png", "Obi Wan"),
             new Character(160, 5, 10, "assets/images/luke-skywalker.png", "Luke"),
@@ -34,12 +26,11 @@ var game = {
             new Character(190, 20, 25, "assets/images/rey.jpg", "Rey")
         )
 
+        currentEnemyElement.fadeOut();
+
         this.updateDisplay({ message: "Choose a character to play as!" });
     },
 
-    //Select Character method
-    //-- Clicking a character selects that character for the player to use
-    //-- All other characters moved into enemies array
     selectCharacter: function(index) {
         if (!this.userHasSelectedCharacter) {
             this.userCharacter = this.characters[index];
@@ -56,43 +47,46 @@ var game = {
        this.updateDisplay({ message: "Choose an enemy!" });
     },
 
-    //Select Enemy method
-    //-- Clicking a character selects that character for the player to fight
     selectEnemy: function(index) {
         if (!this.fighting) {
             this.selectedEnemy = this.availableEnemies[index];
             this.fighting = true;
             this.availableEnemies.splice(index, 1);
+            currentEnemyElement.fadeIn();
         }
 
         this.updateDisplay({ message: "Click Fight to Attack!" });
     },
 
-    //Attack method
-    //-- Player moves first
-    //-- subtract user character's attackPower from enemy character's healthPoints
-    //-- increase user character's attackPower by baseAttackPower
-    //-- check game status()
-    //-- subtract enemy character's attackPower from user character's healthPoints
-    //-- check game status()
     attack: function() {
+        var userAttackPower = this.userCharacter.attackPower;
+        var enemyAttackPower = this.selectedEnemy.counterAttackPower;
         console.log("attacked!");
+        this.selectedEnemy.reduceHp(userAttackPower);
+        this.userCharacter.increaseAttackPower();
+        this.checkGameStatus();
+        this.userCharacter.reduceHp(enemyAttackPower);
+        this.checkGameStatus();
+        if (this.fighting) {
+            this.updateDisplay({ message: `You hit for ${userAttackPower} damage! ${this.selectedEnemy.name} hit you for ${enemyAttackPower}!` });
+        }
     },
 
-    //calculateMove(attacker, defender)
-    //-- subtract attacker.attackPower from defender.healthPoints
+    checkGameStatus: function() {
+        let message = "";
+        console.log("checkGameStatus() called");
+        if (this.userCharacter.healthPoints == 0) {
+            message = "You have taken fatal damage!";
+        } else if (this.selectedEnemy.healthPoints == 0) {
+            message = "You win! Select another enemy to continue fighting!";
+            currentEnemyElement.fadeOut();
+        }
+        this.updateDisplay({ message: message });
+        if (message !== "") {
+            this.fighting = false;
+        }
+    },
 
-    //checkGameStatus
-    //-- if user is still alive, allow enemy selection
-    //-- if user is not alive, game over
-    //-- updateDisplay [leave this up to jQuery?]
-
-    //updateDisplay(options)
-    //-- update allCharacters
-    //-- update userCharacter - should update HP also
-    //-- update enemyCharacters
-    //-- update currentEnemy - should update HP also
-    //-- update gameMessage = options.message || ""
     updateDisplay: function(options) {
         options = Object.assign(
             {
@@ -147,7 +141,7 @@ var game = {
     },
 
     updateFightSection: function() {
-        let attackMethod = this.attack;
+        let game = this;
         fightSectionElement.empty();
         if (this.fighting) {
             let fightButton = $("<button>");
@@ -155,7 +149,7 @@ var game = {
             fightSectionElement.append(fightButton);
 
             fightButton.on("click", function () {
-                attackMethod();
+                game.attack();
             });
         }
     },
@@ -166,9 +160,6 @@ var game = {
     }
 }
 
-//jQuery events
-
-//initialize page on load
 $(document).ready(function() {
     $("body").prepend(gameContainer);
     gameContainer.append([gameMessageElement, characterListElement, selectedCharacterElement, availableEnemiesElement, fightSectionElement, currentEnemyElement]);
@@ -181,5 +172,3 @@ $(document).ready(function() {
 
     
 });
-//select enemy on click
-//attack on click
