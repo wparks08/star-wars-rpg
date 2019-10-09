@@ -1,13 +1,13 @@
-//Define Character object
-//-- healthPoints, baseAttackPower, attackPower, counterAttackPower, image, name
-var gameContainer = $("<div>");
-gameContainer.addClass("container");
-var gameMessageElement = $("<div id='message'>");
-var characterListElement = $("<ul id='character-list'>");
-var selectedCharacterElement = $("<div id='selected-character'>");
-var availableEnemiesElement = $("<div id='available-enemies'>");
-var fightSectionElement = $("<div id='fight-section'>");
-var currentEnemyElement = $("<div id='current-enemy'>");
+
+var gameContainer = $(".container");
+// gameContainer.addClass("container");
+var gameMessageElement = $("#message");
+var characterListElement = $("#character-list");
+var selectedCharacterElement = $("#selected-character");
+var availableEnemiesElement = $("#available-enemies");
+var fightSectionElement = $("#fight-section");
+var currentEnemyElement = $("#current-enemy");
+var fightMessageElement = $("#fight-message");
 
 var game = {
     characters: [],
@@ -16,19 +16,32 @@ var game = {
     selectedEnemy: Character,
     fighting: false,
     availableEnemies: [],
-    // message: "",
+    defeated: false,
 
     initialize: function() {
+        this.characters = [];
         this.characters.push(
-            new Character(150, 10, 15, "assets/images/obi-wan.png", "Obi Wan"),
-            new Character(160, 5, 10, "assets/images/luke-skywalker.png", "Luke"),
-            new Character(175, 15, 20, "assets/images/kylo-ren.jpg", "Kylo Ren"),
-            new Character(190, 20, 25, "assets/images/rey.jpg", "Rey")
-        )
+            new Character(155, 20, 20, "assets/images/obi-wan.png", "Obi Wan"),
+            new Character(160, 17, 10, "assets/images/luke-skywalker.png", "Luke"),
+            new Character(165, 15, 50, "assets/images/kylo-ren.jpg", "Kylo Ren"),
+            new Character(175, 20, 35, "assets/images/rey.jpg", "Rey")
+        );
+        this.userCharacter = Character;
+        this.userHasSelectedCharacter = false;
+        this.selectedEnemy = Character;
+        this.fighting = false;
+        this.availableEnemies = [];
+        this.defeated = false;
 
         currentEnemyElement.fadeOut();
+        selectedCharacterElement.empty();
+        availableEnemiesElement.empty();
 
         this.updateDisplay({ message: "Choose a character to play as!" });
+        this.updateFightMessage("");
+        $("#character-list .character").on("click", function () {
+            game.selectCharacter($(this).data("index"));
+        });
     },
 
     selectCharacter: function(index) {
@@ -48,6 +61,9 @@ var game = {
     },
 
     selectEnemy: function(index) {
+        if (this.defeated) {
+            return;
+        }
         if (!this.fighting) {
             this.selectedEnemy = this.availableEnemies[index];
             this.fighting = true;
@@ -59,26 +75,36 @@ var game = {
     },
 
     attack: function() {
+        if (!this.fighting) {
+            return;
+        }
         var userAttackPower = this.userCharacter.attackPower;
         var enemyAttackPower = this.selectedEnemy.counterAttackPower;
-        console.log("attacked!");
         this.selectedEnemy.reduceHp(userAttackPower);
         this.userCharacter.increaseAttackPower();
         this.checkGameStatus();
-        this.userCharacter.reduceHp(enemyAttackPower);
-        this.checkGameStatus();
         if (this.fighting) {
-            this.updateDisplay({ message: `You hit for ${userAttackPower} damage! ${this.selectedEnemy.name} hit you for ${enemyAttackPower}!` });
+            this.userCharacter.reduceHp(enemyAttackPower);
+            this.checkGameStatus();
+            this.updateDisplay({ fightMessage: `You hit for ${userAttackPower} damage! ${this.selectedEnemy.name} hit you for ${enemyAttackPower}!` });
+        } else {
+            this.updateFightSection();
+            this.updateFightMessage(`You hit for ${userAttackPower} damage! ${this.selectedEnemy.name} falls!`)
         }
+        
     },
 
     checkGameStatus: function() {
         let message = "";
-        console.log("checkGameStatus() called");
         if (this.userCharacter.healthPoints == 0) {
             message = "You have taken fatal damage!";
+            this.defeated = true;
         } else if (this.selectedEnemy.healthPoints == 0) {
-            message = "You win! Select another enemy to continue fighting!";
+            if (this.availableEnemies.length === 0) {
+                message = "Congratulations! All enemies have been defeated!";
+            } else {
+                message = "You win! Select another enemy to continue fighting!";
+            }
             currentEnemyElement.fadeOut();
         }
         this.updateDisplay({ message: message });
@@ -90,7 +116,8 @@ var game = {
     updateDisplay: function(options) {
         options = Object.assign(
             {
-                message: ""
+                message: gameMessageElement.html(),
+                fightMessage: fightMessageElement.html()
             },
             options
         )
@@ -100,6 +127,7 @@ var game = {
         this.updateCurrentEnemy();
         this.updateFightSection();
         this.updateGameMessage(options.message);
+        this.updateFightMessage(options.fightMessage);
     },
 
     updateCharacterList: function() {
@@ -143,7 +171,7 @@ var game = {
     updateFightSection: function() {
         let game = this;
         fightSectionElement.empty();
-        if (this.fighting) {
+        if (this.fighting && !this.defeated) {
             let fightButton = $("<button>");
             fightButton.html("Fight!");
             fightSectionElement.append(fightButton);
@@ -151,24 +179,33 @@ var game = {
             fightButton.on("click", function () {
                 game.attack();
             });
+        } else if (this.defeated || (this.availableEnemies.length === 0 && this.userHasSelectedCharacter)) {
+            fightSectionElement.empty();
+            let resetButton = $("<button>");
+            resetButton.html("Reset");
+            fightSectionElement.append(resetButton);
+
+            resetButton.on("click", function () {
+                game.initialize();
+            });
         }
     },
 
     updateGameMessage: function(message) {
         gameMessageElement.empty()
             .html(`<p>${message}</p>`);
+    },
+
+    updateFightMessage: function(message) {
+        fightMessageElement.empty()
+            .html(`<p>${message}</p>`);
     }
 }
 
 $(document).ready(function() {
-    $("body").prepend(gameContainer);
-    gameContainer.append([gameMessageElement, characterListElement, selectedCharacterElement, availableEnemiesElement, fightSectionElement, currentEnemyElement]);
-
     game.initialize();
 
-    $("#character-list .character").on("click", function() {
-        game.selectCharacter($(this).data("index"));
-    });
-
-    
+    // $("#character-list .character").on("click", function() {
+    //     game.selectCharacter($(this).data("index"));
+    // });
 });
