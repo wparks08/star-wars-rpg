@@ -1,1 +1,94 @@
 /*Style accordingly*/
+html, body {
+    height: 100%;
+    color: #eeeeee;
+    font-size: 1.2rem;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+}
+
+body {
+    background-color: #111;
+    
+}
+
+.bg-container {
+    background-image: url(../images/background.png);
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    background-attachment: fixed;
+}
+
+.container {
+    width: 1032px;
+    margin: 50px auto;
+    
+}
+
+.character-list {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.character {
+    border-width: 4px;
+    border-color: #bb0;
+    border-style: solid;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 15px;
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.character-image {
+    width: 200px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+}
+
+.character-name, .character-hp {
+    text-align: center;
+}
+
+.fight-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+#message {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 500;
+    font-size: 1.6em;
+}
+
+#fight-section button {
+    padding: 25px;
+    font-size: 2.5rem;
+    background-color: rgba(0,0,0,0.5);
+    color: #c02;
+    text-transform: uppercase;
+    border: 5px solid #c02;
+    border-radius: 12px;
+    transition: background-color 0.2s ease;
+}
+
+#fight-section button:focus {
+    outline: 0;
+}
+
+#fight-section button:active {
+    background-color: #500;
+}
+
+#fight-message {
+    padding-top: 10px;
+    text-align: center;
+}
