@@ -1,6 +1,5 @@
 
 var gameContainer = $(".container");
-// gameContainer.addClass("container");
 var gameMessageElement = $("#message");
 var characterListElement = $("#character-list");
 var selectedCharacterElement = $("#selected-character");
@@ -204,8 +203,4 @@ var game = {
 
 $(document).ready(function() {
     game.initialize();
-
-    // $("#character-list .character").on("click", function() {
-    //     game.selectCharacter($(this).data("index"));
-    // });
 });
