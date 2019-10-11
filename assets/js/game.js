@@ -46,6 +46,7 @@ var game = {
     selectCharacter: function(index) {
         if (!this.userHasSelectedCharacter) {
             this.userCharacter = this.characters[index];
+            //move enemy characters into appropriate array
             for (let i = 0; i < this.characters.length; i++) {
                 if (!(this.userCharacter === this.characters[i])) {
                     this.availableEnemies.push(this.characters[i]);
@@ -53,6 +54,7 @@ var game = {
             }
         }
 
+        //reset characters array, now that enemies have been moved over
         this.characters = [];
         this.userHasSelectedCharacter = true;
         
@@ -61,7 +63,7 @@ var game = {
 
     selectEnemy: function(index) {
         if (this.defeated) {
-            return;
+            return; //enforcing "game over" scenario
         }
         if (!this.fighting) {
             this.selectedEnemy = this.availableEnemies[index];
@@ -75,7 +77,7 @@ var game = {
 
     attack: function() {
         if (!this.fighting) {
-            return;
+            return; //can't attack if you're not fighting :)
         }
         var userAttackPower = this.userCharacter.attackPower;
         var enemyAttackPower = this.selectedEnemy.counterAttackPower;
@@ -107,7 +109,7 @@ var game = {
             currentEnemyElement.fadeOut();
         }
         this.updateDisplay({ message: message });
-        if (message !== "") {
+        if (message !== "") { //I'm sure there's better ways to do this....
             this.fighting = false;
         }
     },
@@ -115,7 +117,7 @@ var game = {
     updateDisplay: function(options) {
         options = Object.assign(
             {
-                message: gameMessageElement.html(),
+                message: gameMessageElement.html(), //make sure messages don't change if a new one isn't specified
                 fightMessage: fightMessageElement.html()
             },
             options
@@ -178,7 +180,7 @@ var game = {
             fightButton.on("click", function () {
                 game.attack();
             });
-        } else if (this.defeated || (this.availableEnemies.length === 0 && this.userHasSelectedCharacter)) {
+        } else if (this.defeated || (this.availableEnemies.length === 0 && this.userHasSelectedCharacter)) { //conditions for the game being won
             fightSectionElement.empty();
             let resetButton = $("<button>");
             resetButton.html("Reset");
