@@ -2,8 +2,8 @@
 A simple RPG-style fighting game with a Star Wars flair
 
 ## The Code
-This game is devloped using HTML, CSS, JavaScript, and jQuery.
-The game may be accesses [here](https://wparks08.github.io/unit-4-game).
+This game is developed using HTML, CSS, JavaScript, and jQuery.
+The game may be accessed [here](https://wparks08.github.io/unit-4-game).
 
 ## The Game
 Begin by selecting the character you want to play as. Next, select the enemy you wish to fight. Clicking the attack button will commence one round. When an enemy has been defeated, select another to continue the game. The game is won if all enemy combatants have been defeated.
